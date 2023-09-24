@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: my-api-service
+spec:
+  replicas: 1
+  selector:
+    app: my-api
+  ports:
+  - protocol: TCP
+    port: 5001 # Port on which the service will be exposed
+    targetPort: 5001 # Port on which the API inside the container is listening
+

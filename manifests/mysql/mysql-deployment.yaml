@@ -17,6 +17,13 @@ spec:
         image: mysql-image:tag # The MySQL image you wish to use
         ports:
         - containerPort: 3306  # MySQL port
+        resources:
+          limits:
+            memory: "512Mi"   # Maximum memory limit
+            cpu: "1"           # Maximum CPU usage limit
+          requests:
+            memory: "256Mi"   # Minimum memory request
+            cpu: "0.5"         # Minimum CPU usage request
        # env:
         #  - name: MYSQL_ROOT_PASSWORD
         #    value: your-root-password  # Change this to your root password

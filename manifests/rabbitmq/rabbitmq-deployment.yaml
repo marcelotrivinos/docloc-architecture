@@ -19,10 +19,10 @@ spec:
         - containerPort: 5672  # Standard port for AMQP connections
       #  - containerPort: 15672  # Port for the RabbitMQ management panel (optional)
         resources:
-          requests:
-            memory: "512Mi"  # Minimum required resources
           limits:
-            memory: "1Gi"    # Maximum resource limit
+            memory: "1Gi"    # Maximum memory limit
+          requests:
+            memory: "512Mi"  # Minimum memory request
         env:
           #- name: RABBITMQ_ERLANG_COOKIE
           #  value: "secret"  # Change this to your Erlang cookie

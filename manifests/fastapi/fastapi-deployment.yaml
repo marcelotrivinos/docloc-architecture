@@ -20,3 +20,10 @@ spec:
         env:
           - name: DATABASE_URL
             value: "mysql://root:1234@localhost:3306/storedb"  # Replace with your MySQL connection details
+        resources:
+          limits:
+            memory: "256Mi"   # Maximum memory limit
+            cpu: "0.5"         # Maximum CPU usage limit
+          requests:
+            memory: "128Mi"   # Minimum memory request
+            cpu: "0.25"        # Minimum CPU usage request

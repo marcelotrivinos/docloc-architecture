@@ -27,3 +27,15 @@ spec:
           requests:
             memory: "128Mi"   # Minimum memory request
             cpu: "0.25"        # Minimum CPU usage request
+        readinessProbe:
+          httpGet:
+            path: /healthz  # Readiness probe path
+            port: 80
+          initialDelaySeconds: 5  # Initial delay before starting readiness probes
+          periodSeconds: 10  # Frequency of readiness probes
+        livenessProbe:
+          httpGet:
+            path: /healthz  # Liveness probe path
+            port: 80
+          initialDelaySeconds: 15  # Initial delay before starting liveness probes
+          periodSeconds: 10  # Frequency of liveness probes

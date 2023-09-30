@@ -29,6 +29,22 @@ spec:
         #    value: your-root-password  # Change this to your root password
         #  - name: MYSQL_DATABASE
         #    value: your-database-name  # Change this to your database name
+        readinessProbe:
+          exec:
+            command:
+            - "sh"
+            - "-c"
+            - "mysqladmin ping -h 127.0.0.1 -u MYSQL_USER -p MYSQL_ROOT_PASSWORD"
+          initialDelaySeconds: 5  # Initial delay before starting readiness probes
+          periodSeconds: 10  # Frequency of readiness probes
+        livenessProbe:
+          exec:
+            command:
+            - "sh"
+            - "-c"
+            - "mysqladmin ping -h 127.0.0.1 -u MYSQL_USER -p MYSQL_ROOT_PASSWORD"
+          initialDelaySeconds: 15  # Initial delay before starting liveness probes
+          periodSeconds: 10  # Frequency of liveness probes
         volumeMounts:
         - name: mysql-persistent-storage
           mountPath: /var/lib/mysql  # Directory where persistent storage will be mounted
@@ -36,3 +52,4 @@ spec:
       - name: mysql-persistent-storage
         persistentVolumeClaim:
           claimName: mysql-pvc  # Name of the PVC you want to mount
+

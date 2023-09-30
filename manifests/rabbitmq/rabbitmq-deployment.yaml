@@ -29,6 +29,16 @@ spec:
         volumeMounts:
         - name: rabbitmq-persistent-storage
           mountPath: /var/lib/rabbitmq  # Mount path where RabbitMQ data will be stored
+        readinessProbe:
+          tcpSocket:
+            port: 5672  # Port for AMQP connections
+          initialDelaySeconds: 30  # Initial delay before starting readiness probes
+          periodSeconds: 10  # Frequency of readiness probes
+        livenessProbe:
+          tcpSocket:
+            port: 5672  # Port for AMQP connections
+          initialDelaySeconds: 60  # Initial delay before starting liveness probes
+          periodSeconds: 10  # Frequency of liveness probes
       volumes:
       - name: rabbitmq-persistent-storage
         persistentVolumeClaim:

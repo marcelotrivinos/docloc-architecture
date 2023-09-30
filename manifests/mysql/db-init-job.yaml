@@ -1,0 +1,25 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: db-init-job
+spec:
+  template:
+    spec:
+      containers:
+      - name: db-init-container
+        image: mysql-image:tag  # Use the image with the database management tools
+
+        #env:
+        #- name: DB_ROOT_PASSWORD  # Change this to your root password
+        #  value: your-root-password
+
+        command: ["sh", "-c"]
+        args:
+        - |
+          mysql -u root -p$MYSQL_ROOT_PASSWORD -e 'CREATE DATABASE MYSQL_DATABASE';
+          mysql -u root -p$MYSQL_ROOT_PASSWORD -e "CREATE USER 'MYSQL_USER'@'%' IDENTIFIED BY 'MYSQL_ROOT_PASSWORD'";
+          mysql -u root -p$MYSQL_ROOT_PASSWORD-e "GRANT ALL PRIVILEGES ON MYSQL_DATABASE.* TO 'MYSQL_USER'@'%'";
+          mysql -u root -p$MYSQL_ROOT_PASSWORD -e 'FLUSH PRIVILEGES';
+
+      restartPolicy: Never
+  backoffLimit: 4  # Adjust as needed

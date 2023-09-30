@@ -72,54 +72,12 @@ resource "null_resource" "install_kubernetes" {
       # Install a network plugin (example: Calico)
       kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
 	  
-	  # Run the desired Kubernetes YAML file (replace with the location of your YAML file)
-	  kubectl apply -f manifests/
+	    # Run the desired Kubernetes YAML file (replace with the location of your YAML file)
+	    kubectl apply -f manifests/
 
-    # Create the MySQL and RabbitMQ Persistent Volumes
-    kubectl apply -f mysql-pv.yaml
-    kubectl apply -f rabbitmq-pv.yaml
-    EOT
-  }
-}
-
-resource "null_resource" "install_mysql" {
-  # There are no required attributes in this case
-
-  # Run local commands to install MySQL
-  provisioner "local-exec" {
-    command = <<EOT
-      # Install MySQL Server.
-      sudo apt-get update
-      sudo apt-get install -y mysql-server
-
-      # Start the MySQL service
-      sudo systemctl start mysql
-
-      # Make sure MySQL starts automatically on boot
-      sudo systemctl enable mysql
-	  
-	  # Connect to MySQL as the administrator user
-	  sudo mysql -u root -p
-	  
-	  # Create the api user
-	  CREATE USER 'api'@'localhost' IDENTIFIED BY 'contraseña';
-	  
-	  # Grant permissions to the api user for both databases
-	  GRANT ALL PRIVILEGES ON news.* TO 'api'@'localhost';
-	  GRANT ALL PRIVILEGES ON locations.* TO 'api'@'localhost';
-	  
-	  # Create the admin user
-	  CREATE USER 'admin'@'localhost' IDENTIFIED BY 'contraseña';
-	  
-	  # Grant permissions to the admin user for both databases
-	  GRANT ALL PRIVILEGES ON news.* TO 'admin'@'localhost';
-	  GRANT ALL PRIVILEGES ON locations.* TO 'admin'@'localhost';
-	  
-	  # Apply the changes
-	  FLUSH PRIVILEGES;
-	  
-	  # Close the connection
-	  EXIT;
+      # Create the MySQL and RabbitMQ Persistent Volumes
+      kubectl apply -f mysql-pv.yaml
+      kubectl apply -f rabbitmq-pv.yaml
     EOT
   }
 }
@@ -130,5 +88,5 @@ resource "null_resource" "apply_provisioner" {
     always_run = "${timestamp()}"
   }
 
-  depends_on = [null_resource.install_kubernetes, null_resource.install_mysql]
+  depends_on = [null_resource.install_kubernetes]
 }

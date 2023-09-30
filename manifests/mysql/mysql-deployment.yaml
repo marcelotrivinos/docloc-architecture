@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mysql-deployment
+spec:
+  replicas: 1  # The desired number of MySQL replicas
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql-image:tag # The MySQL image you wish to use
+        ports:
+        - containerPort: 3306  # MySQL port
+       # env:
+        #  - name: MYSQL_ROOT_PASSWORD
+        #    value: your-root-password  # Change this to your root password
+        #  - name: MYSQL_DATABASE
+        #    value: your-database-name  # Change this to your database name

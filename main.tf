@@ -2,30 +2,6 @@
 
 # A provider is not used as we are not in the cloud
 
-# Resource to run local commands
-resource "null_resource" "install_rabbitmq" {
-  # There are no required attributes in this case
-
-  # # Run local commands to install RabbitMQ
-  provisioner "local-exec" {
-    command = <<EOT
-      # Update the package list and install RabbitMQ
-      sudo apt-get update -y
-      sudo apt-get install -y rabbitmq-server
-
-      # Enable and start the RabbitMQ service
-      sudo systemctl enable rabbitmq-server
-      sudo systemctl start rabbitmq-server
-
-      # Configure RabbitMQ to listen on all interfaces
-      sudo sed -i 's/127.0.0.1/0.0.0.0/' /etc/rabbitmq/rabbitmq.conf
-
-      # Restart RabbitMQ to apply the configuration
-      sudo systemctl restart rabbitmq-server
-    EOT
-  }
-}
-
 
 resource "null_resource" "install_kubernetes" {
   # There are no required attributes in this case
@@ -36,6 +12,11 @@ resource "null_resource" "install_kubernetes" {
       # Update the package list and install Docker
       sudo apt-get update -y
       sudo apt-get install -y docker.io
+
+      # Build images from Dockerfiles
+      docker build -t rabbitmq-image:tag dockerfiles/rabbitmq
+      docker build -t fastapi-image:tag dockerfiles/fastapi
+      docker build -t mysql-image:tag dockerfiles/mysql
 
       # Add the Kubernetes repository and GPG key
       sudo curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -57,7 +38,7 @@ resource "null_resource" "install_kubernetes" {
       kubectl apply -f https://docs.projectcalico.org/v3.8/manifests/calico.yaml
 	  
 	  # Run the desired Kubernetes YAML file (replace with the location of your YAML file)
-	  kubectl apply -f deployment.yaml
+	  kubectl apply -f manifests/
     EOT
   }
 }
@@ -80,30 +61,6 @@ resource "null_resource" "install_mysql" {
 	  
 	  # Connect to MySQL as the administrator user
 	  sudo mysql -u root -p
-	  
-	  # Create the news database
-	  CREATE DATABASE database1;
-
-	  # Select the news database
-	  USE database1;
-
-	  # Create a table in the news database
-	  CREATE TABLE table1 (
-		id INT PRIMARY KEY,
-		name VARCHAR(255)
-	  );
-
-	  # Create the locations database
-	  CREATE DATABASE database1;
-
-	  # Select the locations database
-	  USE database1;
-
-	  # Create a table in the locations database
-	  CREATE TABLE table1 (
-		id INT PRIMARY KEY,
-		name VARCHAR(255)
-	  );
 	  
 	  # Create the api user
 	  CREATE USER 'api'@'localhost' IDENTIFIED BY 'contraseña';

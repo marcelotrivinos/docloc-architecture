@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-deployment
+spec:
+  replicas: 1  # The desired number of replicas (adjust as needed)
+  selector:
+    matchLabels:
+      app: fastapi
+  template:
+    metadata:
+      labels:
+        app: fastapi
+    spec:
+      containers:
+      - name: fastapi
+        image: fastapi-image:tag  # Replace with the actual image and tag
+        ports:
+        - containerPort: 80  # The port your FastAPI application listens on
+        env:
+          - name: DATABASE_URL
+            value: "mysql://root:1234@localhost:3306/storedb"  # Replace with your MySQL connection details

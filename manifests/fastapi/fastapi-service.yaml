@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-service
+spec:
+  selector:
+    app: fastapi  # Match pods with the 'app: fastapi' label
+  ports:
+    - protocol: TCP
+      port: 80  # Port to access the FastAPI application
+      targetPort: 80

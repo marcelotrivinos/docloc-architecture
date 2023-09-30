@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+spec:
+  replicas: 1  # The desired number of RabbitMQ replicas
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - name: rabbitmq
+        image: rabbitmq-image:tag  # The RabbitMQ image you wish to use
+        ports:
+        - containerPort: 5672  # Standard port for AMQP connections
+      #  - containerPort: 15672  # Port for the RabbitMQ management panel (optional)
+        resources:
+          requests:
+            memory: "512Mi"  # Minimum required resources
+          limits:
+            memory: "1Gi"    # Maximum resource limit
+        env:
+          #- name: RABBITMQ_ERLANG_COOKIE
+          #  value: "secret"  # Change this to your Erlang cookie
+        volumeMounts:
+        - name: rabbitmq-data
+          mountPath: /var/lib/rabbitmq  # Path for persistent data
+
+      volumes:
+      - name: rabbitmq-data
+        persistentVolumeClaim:
+          claimName: rabbitmq-pvc  # Name of the PersistentVolumeClaim for data storage

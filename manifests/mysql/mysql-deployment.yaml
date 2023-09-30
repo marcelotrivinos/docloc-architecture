@@ -29,3 +29,10 @@ spec:
         #    value: your-root-password  # Change this to your root password
         #  - name: MYSQL_DATABASE
         #    value: your-database-name  # Change this to your database name
+        volumeMounts:
+        - name: mysql-persistent-storage
+          mountPath: /var/lib/mysql  # Directory where persistent storage will be mounted
+      volumes:
+      - name: mysql-persistent-storage
+        persistentVolumeClaim:
+          claimName: mysql-pvc  # Name of the PVC you want to mount

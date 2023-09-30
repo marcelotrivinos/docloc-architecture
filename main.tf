@@ -2,6 +2,41 @@
 
 # A provider is not used as we are not in the cloud
 
+resource "kubernetes_persistent_volume" "mysql_pv" {
+  metadata {
+    name = "mysql-pv"  # PV name for MySQL
+  }
+
+  spec {
+    capacity {
+      storage = "5Gi"  # Desired storage capacity for MySQL PV
+    }
+    access_modes = ["ReadWriteOnce"]  # Access mode for MySQL PV
+    persistent_volume_reclaim_policy = "Retain"  # PV reclaim policy
+    storage_class_name = "mysql-storage"  # Storage class name for MySQL PV
+    host_path {
+      path = "/data/mysql"  # Host path where MySQL data will be stored
+    }
+  }
+}
+
+resource "kubernetes_persistent_volume" "rabbitmq_pv" {
+  metadata {
+    name = "rabbitmq-pv"  # PV name for RabbitMQ
+  }
+
+  spec {
+    capacity {
+      storage = "5Gi"  # Desired storage capacity for RabbitMQ PV
+    }
+    access_modes = ["ReadWriteOnce"]  # Access mode for RabbitMQ PV
+    persistent_volume_reclaim_policy = "Retain"  # PV reclaim policy
+    storage_class_name = "rabbitmq-storage"  # Storage class name for RabbitMQ PV
+    host_path {
+      path = "/data/rabbitmq"  # Host path where RabbitMQ data will be stored
+    }
+  }
+}
 
 resource "null_resource" "install_kubernetes" {
   # There are no required attributes in this case
@@ -39,6 +74,10 @@ resource "null_resource" "install_kubernetes" {
 	  
 	  # Run the desired Kubernetes YAML file (replace with the location of your YAML file)
 	  kubectl apply -f manifests/
+
+    # Create the MySQL and RabbitMQ Persistent Volumes
+    kubectl apply -f mysql-pv.yaml
+    kubectl apply -f rabbitmq-pv.yaml
     EOT
   }
 }
@@ -91,5 +130,5 @@ resource "null_resource" "apply_provisioner" {
     always_run = "${timestamp()}"
   }
 
-  depends_on = [null_resource.install_rabbitmq, null_resource.install_kubernetes, null_resource.install_mysql]
+  depends_on = [null_resource.install_kubernetes, null_resource.install_mysql]
 }

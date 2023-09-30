@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rabbitmq-pv
+spec:
+  capacity:
+    storage: 5Gi  # Desired storage capacity
+  accessModes:
+    - ReadWriteOnce  # Access mode: ReadWriteOnce (single-node read/write)
+  persistentVolumeReclaimPolicy: Retain  # Persistent volume reclaim policy
+  storageClassName: rabbitmq-storage  # Storage class name
+  hostPath:
+    path: /data/rabbitmq  # Host path where RabbitMQ data will be stored
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce  # Access mode: ReadWriteOnce (matches PV)
+  resources:
+    requests:
+      storage: 5Gi  # Requested storage amount
+  storageClassName: rabbitmq-storage  # Storage class name (matches PV)

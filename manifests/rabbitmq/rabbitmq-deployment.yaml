@@ -27,10 +27,9 @@ spec:
           #- name: RABBITMQ_ERLANG_COOKIE
           #  value: "secret"  # Change this to your Erlang cookie
         volumeMounts:
-        - name: rabbitmq-data
-          mountPath: /var/lib/rabbitmq  # Path for persistent data
-
+        - name: rabbitmq-persistent-storage
+          mountPath: /var/lib/rabbitmq  # Mount path where RabbitMQ data will be stored
       volumes:
-      - name: rabbitmq-data
+      - name: rabbitmq-persistent-storage
         persistentVolumeClaim:
-          claimName: rabbitmq-pvc  # Name of the PersistentVolumeClaim for data storage
+          claimName: rabbitmq-pvc  # Name of the PVC you want to mount

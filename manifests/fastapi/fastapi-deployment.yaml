@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: fastapi
-        image: fastapi-image:tag  # Replace with the actual image and tag
+        image: fastapi:dev  # Replace with the actual image and tag
         ports:
         - containerPort: 80  # The port your FastAPI application listens on
         env:

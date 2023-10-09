@@ -1,4 +1,4 @@
-FROM mariadb:latest
+FROM mariadb:11.1
 
 ENV MYSQL_ROOT_PASSWORD=1234
 ENV MYSQL_USER=admin

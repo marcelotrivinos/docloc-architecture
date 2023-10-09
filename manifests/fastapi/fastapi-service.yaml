@@ -7,5 +7,5 @@ spec:
     app: fastapi  # Match pods with the 'app: fastapi' label
   ports:
     - protocol: TCP
-      port: 80  # Port to access the FastAPI application
+      port: 5001  # Port to access the FastAPI application
       targetPort: 80

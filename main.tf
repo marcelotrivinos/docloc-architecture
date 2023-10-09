@@ -20,24 +20,6 @@ resource "kubernetes_persistent_volume" "mysql_pv" {
   }
 }
 
-resource "kubernetes_persistent_volume" "rabbitmq_pv" {
-  metadata {
-    name = "rabbitmq-pv"  # PV name for RabbitMQ
-  }
-
-  spec {
-    capacity {
-      storage = "5Gi"  # Desired storage capacity for RabbitMQ PV
-    }
-    access_modes = ["ReadWriteOnce"]  # Access mode for RabbitMQ PV
-    persistent_volume_reclaim_policy = "Retain"  # PV reclaim policy
-    storage_class_name = "rabbitmq-storage"  # Storage class name for RabbitMQ PV
-    host_path {
-      path = "/data/rabbitmq"  # Host path where RabbitMQ data will be stored
-    }
-  }
-}
-
 resource "null_resource" "install_kubernetes" {
   # There are no required attributes in this case
 
@@ -49,9 +31,8 @@ resource "null_resource" "install_kubernetes" {
       sudo apt-get install -y docker.io
 
       # Build images from Dockerfiles
-      docker build -t rabbitmq-image:tag dockerfiles/rabbitmq
-      docker build -t fastapi-image:tag dockerfiles/fastapi
-      docker build -t mysql-image:tag dockerfiles/mysql
+      docker build -t fastapi-image:dev dockerfiles/fastapi
+      docker build -t mysql-image:dev dockerfiles/mysql
 
       # Add the Kubernetes repository and GPG key
       sudo curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
@@ -77,7 +58,6 @@ resource "null_resource" "install_kubernetes" {
 
       # Create the MySQL and RabbitMQ Persistent Volumes
       kubectl apply -f mysql-pv.yaml
-      kubectl apply -f rabbitmq-pv.yaml
     EOT
   }
 }
